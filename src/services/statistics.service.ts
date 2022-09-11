@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Observable, map, forkJoin } from 'rxjs';
 import { CountryValue, StatisticsResponse } from 'src/dtos/StatisticsResponse.dto';
+import { TracesResponse } from 'src/dtos/TracesResponse.dto';
 import { RedisService } from 'src/redis/redis.service';
 
 @Injectable()
@@ -35,5 +36,17 @@ export class StatisticsService {
         } as CountryValue
       })
     )
+  }
+
+  recordTraceMetrics(response: TracesResponse): void {
+    this.redisService.hincrby(StatisticsService.MOST_TRACED_KEY, response.name);
+    
+    this.redisService.get<number>(StatisticsService.LONGEST_DISTANCE_VALUE_KEY)
+      .subscribe((currentLongestDistance) => {
+        if (!currentLongestDistance && response.distance_to_usa > currentLongestDistance) {
+          this.redisService.set(StatisticsService.LONGEST_DISTANCE_COUNTRY_KEY, response.name);
+          this.redisService.set(StatisticsService.LONGEST_DISTANCE_VALUE_KEY, response.distance_to_usa.toString());
+        }
+      })
   }
 }

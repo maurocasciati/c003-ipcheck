@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { AppService } from './app.service';
 import { StatisticsResponse } from './dtos/StatisticsResponse.dto';

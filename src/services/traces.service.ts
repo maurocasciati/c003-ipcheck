@@ -1,14 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { Observable, switchMap, map } from 'rxjs';
+import { Observable, switchMap, map, tap } from 'rxjs';
 import { ApiLayerClient } from 'src/clients/apilayer.client';
 import { IpApiClient } from 'src/clients/ipapi.client';
 import { Currency, TracesResponse } from 'src/dtos/TracesResponse.dto';
 import { BASE_COUNTRY } from 'src/utils/constants';
 import { getDistanteToBaseCountry } from 'src/utils/distance.utils';
+import { StatisticsService } from './statistics.service';
 
 @Injectable()
 export class TracesService {
-  constructor(protected readonly ipapiClient: IpApiClient, protected readonly apilayerClient: ApiLayerClient) {}
+  constructor(
+    private readonly ipapiClient: IpApiClient,
+    private readonly apilayerClient: ApiLayerClient,
+    private readonly statisticsService: StatisticsService,
+  ) {}
 
   requestTracesForIp(ip: string): Observable<TracesResponse> {
     return this.ipapiClient.getIpInformation(ip).pipe(
@@ -22,7 +27,8 @@ export class TracesService {
           currencies: this.buildCurrenciesResponse(ipData.currency, rate),
           distance_to_usa: getDistanteToBaseCountry(ipData.lat, ipData.lon)
         } as TracesResponse))
-      ))
+      )),
+      tap((response) => this.statisticsService.recordTraceMetrics(response))
     )
   }
 

@@ -11,6 +11,10 @@ export class RedisService {
     this.redisClient = this.cacheManager.store.getClient();
   }
 
+  set(key: string, value: string) {
+    this.redisClient.set(key, value);
+  }
+
   get<T>(key: string): Observable<T> {
     return new Observable((subscriber) => {
       this.redisClient.get(key, (error, result) => {
