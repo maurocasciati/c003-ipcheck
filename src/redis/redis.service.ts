@@ -11,8 +11,8 @@ export class RedisService {
     this.redisClient = this.cacheManager.store.getClient();
   }
 
-  set(key: string, value: string) {
-    this.redisClient.set(key, value);
+  set(key: string, value: string, duration?: number) {
+    duration ? this.redisClient.set(key, value, 'EX', duration) : this.redisClient.set(key, value);
   }
 
   get<T>(key: string): Observable<T> {
@@ -24,6 +24,10 @@ export class RedisService {
     });
   }
 
+  hincrby(key: string, field: string) {
+    this.redisClient.hincrby(key, field, 1);
+  }
+
   hgetall(key: string): Observable<{ [key: string]: string }> {
     return new Observable((subscriber) => {
       this.redisClient.hgetall(key, (error, result) => {
@@ -31,9 +35,5 @@ export class RedisService {
         subscriber.complete();
       });
     });
-  }
-
-  hincrby(key: string, field: string) {
-    this.redisClient.hincrby(key, field, 1);
   }
 }
