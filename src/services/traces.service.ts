@@ -1,11 +1,10 @@
-import { Injectable } from "@nestjs/common";
-import { Observable, switchMap, map } from "rxjs";
-import { ApiLayerClient } from "src/clients/apilayer.client";
-import { IpApiClient } from "src/clients/ipapi.client";
-import { Currency } from "src/dtos/Currency.dto";
-import { TracesResponse } from "src/dtos/TracesResponse.dto";
-import { BASE_COUNTRY } from "src/utils/constants";
-import { getDistanteToBaseCountry } from "src/utils/distance.utils";
+import { Injectable } from '@nestjs/common';
+import { Observable, switchMap, map } from 'rxjs';
+import { ApiLayerClient } from 'src/clients/apilayer.client';
+import { IpApiClient } from 'src/clients/ipapi.client';
+import { Currency, TracesResponse } from 'src/dtos/TracesResponse.dto';
+import { BASE_COUNTRY } from 'src/utils/constants';
+import { getDistanteToBaseCountry } from 'src/utils/distance.utils';
 
 @Injectable()
 export class TracesService {

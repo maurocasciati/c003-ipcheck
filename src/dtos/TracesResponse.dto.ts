@@ -1,5 +1,3 @@
-import { Currency } from "./Currency.dto"
-
 export class TracesResponse {
   ip: string
   name: string
@@ -8,4 +6,10 @@ export class TracesResponse {
   lon: number
   currencies: Currency[]
   distance_to_usa: number
+}
+
+export class Currency {
+  iso: string
+  symbol: string
+  conversion_rate: number
 }

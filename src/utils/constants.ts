@@ -1,5 +1,5 @@
-import { Currency } from "src/dtos/Currency.dto";
-import { coordinateToRad } from "./distance.utils";
+import { Currency } from 'src/dtos/TracesResponse.dto';
+import { coordinateToRad } from './distance.utils';
 
 export const API_LAYER_URL = 'https://api.apilayer.com/fixer/latest';
 export const API_LAYER_KEY = 'hunX0YQfq0eVVnCtVWVipFO0tugFjxVZ';

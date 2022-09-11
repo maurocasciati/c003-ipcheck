@@ -5,10 +5,12 @@ import { AppService } from './app.service';
 import { IpApiClient } from './clients/ipapi.client';
 import { ApiLayerClient } from './clients/apilayer.client';
 import { TracesService } from './services/traces.service';
+import { RedisModule } from './redis/redis.module';
+import { StatisticsService } from './services/statistics.service';
 
 @Module({
-  imports: [HttpModule],
+  imports: [HttpModule, RedisModule],
   controllers: [AppController],
-  providers: [AppService, IpApiClient, ApiLayerClient, TracesService],
+  providers: [AppService, IpApiClient, ApiLayerClient, TracesService, StatisticsService],
 })
 export class AppModule {}

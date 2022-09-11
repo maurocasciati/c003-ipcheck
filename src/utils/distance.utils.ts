@@ -1,4 +1,4 @@
-import { BASE_COUNTRY } from "./constants";
+import { BASE_COUNTRY } from './constants';
 
 export const getDistanteToBaseCountry = (lat: number, lon: number): number => {
   const fromLatInRad = coordinateToRad(lat);
@@ -16,6 +16,5 @@ export const getDistanteToBaseCountry = (lat: number, lon: number): number => {
 }
 
 export const coordinateToRad = (coordinate: number): number => {
-  console.log(`Calculating rad for ${coordinate}`)
   return (coordinate * Math.PI) / 180;
 }
