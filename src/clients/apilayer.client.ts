@@ -1,6 +1,7 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
-import { Observable, map, tap, switchMap, of } from 'rxjs';
+import { Observable, map, tap, switchMap, of, catchError } from 'rxjs';
+import { Currency } from 'src/dtos/TracesResponse.dto';
 import { RedisService } from 'src/redis/redis.service';
 import { API_LAYER_KEY, API_LAYER_URL, BASE_COUNTRY } from 'src/utils/constants';
 
@@ -10,11 +11,21 @@ export class ApiLayerClient {
 
   constructor(private readonly httpService: HttpService, private readonly redisService: RedisService) {}
 
-  getCurrencyRate(currency: string): Observable<number> {
+  getCurrencies(currency: string): Observable<Currency[]> {
+    if (currency === BASE_COUNTRY.currency.iso) {
+      return of([ BASE_COUNTRY.currency ]);
+    }
+
     return this.redisService.get<number>(currency).pipe(
-      switchMap((cachedCurrency) => 
-        cachedCurrency ? of(cachedCurrency) : this.fetchCurrency(currency)
-      )
+      switchMap((cachedRate) => cachedRate ? of(cachedRate) : this.fetchCurrency(currency)),
+      map((rate) => [
+        BASE_COUNTRY.currency,
+        {
+          iso: currency,
+          symbol: '',
+          conversion_rate: rate,
+        }
+      ])
     )
   }
 
@@ -28,7 +39,11 @@ export class ApiLayerClient {
     }
     ).pipe(
       map((response) => response.data.rates[BASE_COUNTRY.currency.iso]),
-      tap((rate) => this.redisService.set(currency, rate, ApiLayerClient.CACHE_DURATION))
+      tap((rate) => this.redisService.set(currency, rate, ApiLayerClient.CACHE_DURATION)),
+      catchError(() => {
+        console.error('Error when fetching currency rate information. Retrieving null')
+        return of(null)
+      }),
     );
   }
 }

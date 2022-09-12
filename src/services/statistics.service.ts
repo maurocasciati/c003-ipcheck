@@ -43,7 +43,7 @@ export class StatisticsService {
     
     this.redisService.get<number>(StatisticsService.LONGEST_DISTANCE_VALUE_KEY)
       .subscribe((currentLongestDistance) => {
-        if (!currentLongestDistance && response.distance_to_usa > currentLongestDistance) {
+        if (response.distance_to_usa > currentLongestDistance) {
           this.redisService.set(StatisticsService.LONGEST_DISTANCE_COUNTRY_KEY, response.name);
           this.redisService.set(StatisticsService.LONGEST_DISTANCE_VALUE_KEY, response.distance_to_usa.toString());
         }
